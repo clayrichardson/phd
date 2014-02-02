@@ -36,8 +36,17 @@ RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php5/fpm/php-fpm.conf
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
+
 ADD ./ssl /ssl
 ADD ./setup /setup
+ADD ./conf /conf
+
+RUN cat /conf/phabricator/default-namespace.private | xargs -I % /var/www/phabricator/bin/config set storage.default-namespace %
+RUN cat /conf/phabricator/mysql_host.private | xargs -I % /var/www/phabricator/bin/config set mysql.host %
+RUN cat /conf/phabricator/mysql_port.private | xargs -I % /var/www/phabricator/bin/config set mysql.port %
+RUN cat /conf/phabricator/mysql_user.private | xargs -I % /var/www/phabricator/bin/config set mysql.user %
+RUN cat /conf/phabricator/mysql_pass.private | xargs -I % /var/www/phabricator/bin/config set mysql.pass %
+
 ADD ./conf/nginx/default /etc/nginx/sites-available/default
 ADD ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
