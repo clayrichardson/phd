@@ -21,3 +21,7 @@ task :shell do
   sh('docker run -t -p 80:80 -p 443:443 -i phabricator /bin/bash')
 end
 
+task :kill do
+  sh('docker ps -q | xargs docker kill')
+end
+
