@@ -6,3 +6,4 @@ Session.vim
 *~
 ssl/*.crt
 ssl/*.key
+conf/phabricator/*.private
