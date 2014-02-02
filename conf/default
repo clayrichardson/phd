@@ -1,0 +1,93 @@
+
+map $request_uri $no_cache {
+  default         1;
+  ~^/file/data/   0;
+  ~^/file/xform/  0;
+  ~^/res/pkg/     0;
+}
+
+# Cache up to 2G of responses and expire after 1 month of not being used
+fastcgi_cache_path /var/nginx/cache/phab levels=1:2 keys_zone=phab:128m inactive=1M max_size=2G;
+fastcgi_temp_path /var/nginx/temp 1 2;
+
+server {
+  listen 80;
+  rewrite ^ https://$host/$request_uri? permanent;
+}
+
+server {
+  listen 443 ssl;
+
+  ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+  ssl_prefer_server_ciphers on;
+  ssl_ciphers ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:RC4-SHA:AES256-GCM-SHA384:AES256-SHA256:CAMELLIA256-SHA:ECDHE-RSA-AES128-SHA:AES128-GCM-SHA256:AES128-SHA256:AES128-SHA:CAMELLIA128-SHA;
+
+  ssl_certificate /ssl/*.crt;
+  ssl_certificate_key /ssl/*.key;
+
+  root      /var/www/phabricator/webroot;
+
+  client_max_body_size 100M;
+
+  location / {
+    expires max;
+
+    try_files $uri /index.php?__path__=$uri&$query_string;
+  }
+
+  location ~ ^/res/[a-f0-9]+(/.*) {
+    expires max;
+
+    try_files $1 /index.php?__path__=$uri&$query_string;
+  }
+
+  location = /index.php {
+    if ($args !~ __path__) {
+      set $args __path__=$uri&$query_string;
+    }
+
+    fastcgi_pass   unix://var/run/php5-fpm.sock;
+    fastcgi_index   index.php;
+
+    #required if PHP was built with --enable-force-cgi-redirect
+    fastcgi_param  REDIRECT_STATUS    200;
+
+    #variables to make the $_SERVER populate in PHP
+    fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+    fastcgi_param  QUERY_STRING       $query_string;
+    fastcgi_param  REQUEST_METHOD     $request_method;
+    fastcgi_param  CONTENT_TYPE       $content_type;
+    fastcgi_param  CONTENT_LENGTH     $content_length;
+
+    fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
+
+    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+
+    fastcgi_param  REMOTE_ADDR        $remote_addr;
+
+    # Provide as much of Apache's SSL +StdEnvVars data as possible.
+    fastcgi_param HTTPS                 on;
+    fastcgi_param SSL_PROTOCOL          $ssl_protocol;
+    fastcgi_param SSL_CIPHER            $ssl_cipher;
+    fastcgi_param SSL_SESSION_ID        $ssl_session_id;
+    fastcgi_param SSL_CLIENT_VERIFY     $ssl_client_verify;
+
+    # Only cache responses according to map $no_cache
+    fastcgi_no_cache $no_cache;
+    fastcgi_cache_bypass $no_cache;
+ 
+    fastcgi_cache_key $request_uri;
+    fastcgi_cache phab;
+    # Cache 200 301 302 for 1M
+    fastcgi_cache_valid 1M;
+    # Respond with stale if updating cache or some errors
+    fastcgi_cache_use_stale error timeout updating http_500 http_503;
+    # Prevent stampede for same resource to backend
+    fastcgi_cache_lock on;
+    # Ignore caching headers from phab
+    fastcgi_ignore_headers Expires Cache-Control;
+
+  }
+}
+
