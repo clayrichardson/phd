@@ -38,7 +38,6 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 ADD ./ssl /ssl
 ADD ./setup /setup
 ADD ./conf/nginx/default /etc/nginx/sites-available/default
-ADD ./conf/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN /bin/bash /setup/phabricator.sh
