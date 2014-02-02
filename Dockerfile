@@ -33,6 +33,7 @@ RUN git clone git://github.com/facebook/arcanist.git /var/www/arcanist
 RUN git clone git://github.com/facebook/phabricator.git /var/www/phabricator
 
 RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php5/fpm/php-fpm.conf
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 ADD ./ssl /ssl
