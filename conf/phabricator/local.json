@@ -1,0 +1,7 @@
+{
+  "storage.default-namespace" : "phabricator",
+  "phabricator.base-uri"      : "http:\/\/[hostname]",
+  "mysql.pass"                : "[password]",
+  "mysql.user"                : "[username]",
+  "mysql.host"                : "[host]"
+}
