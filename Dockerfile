@@ -32,6 +32,10 @@ RUN mkdir -p /var/run/php5-fpm
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /var/nginx/temp
 RUN mkdir -p /var/nginx/cache/phab
+RUN mkdir -p /var/log/nginx
+
+RUN touch /var/log/nginx/access.log
+RUN touch /var/log/nginx/error.log
 
 RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php5/fpm/php-fpm.conf
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
