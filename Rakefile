@@ -14,7 +14,8 @@ task :attach do
 end
 
 task :interactive do
-  sh('docker run -t -p 80:80/tcp -p 443:443/tcp -i phabricator')
+  sh('docker rm phabricator')
+  sh('docker run -name phabricator -t -i phabricator')
 end
 
 task :shell do
