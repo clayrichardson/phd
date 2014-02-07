@@ -29,8 +29,6 @@ server {
 
   root      /var/www/phabricator/webroot;
 
-  client_max_body_size 100M;
-
   location / {
     expires max;
 
