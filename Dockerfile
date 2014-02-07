@@ -39,19 +39,20 @@ RUN touch /var/log/nginx/error.log
 
 RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php5/fpm/php-fpm.conf
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN echo "apc.stat = 0" >> /etc/php5/fpm/php.ini
+
+RUN rm /etc/nginx/nginx.conf /etc/nginx/sites-enabled/* /etc/nginx/sites-available/*
 
 ADD ./ssl /ssl
 ADD ./setup /setup
 ADD ./conf /conf
 ADD ./run /run
 
-ADD ./conf/nginx/default /etc/nginx/sites-available/default
+RUN /bin/bash /setup/setup.sh
+
+ADD ./conf/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD ./conf/phabricator/local.json /var/www/phabricator/conf/local/local.json
-
-RUN /bin/bash /setup/phabricator.sh
 
 EXPOSE 80/tcp 443/tcp
 
