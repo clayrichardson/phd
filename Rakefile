@@ -14,11 +14,11 @@ task :attach do
 end
 
 task :interactive do
-  sh('docker run -t -p 80:80 -p 443:443 -i phabricator')
+  sh('docker run -t -p 80:80/tcp -p 443:443/tcp -i phabricator')
 end
 
 task :shell do
-  sh('docker run -t -p 80:80 -p 443:443 -i phabricator /bin/bash')
+  sh('docker run -t -p 80:80/tcp -p 443:443/tcp -i phabricator /bin/bash')
 end
 
 task :kill do
