@@ -54,6 +54,8 @@ server {
 
     fastcgi_param  REMOTE_ADDR        $remote_addr;
 
+    fastcgi_param HTTPS               $http_x_forwarded_proto;
+
     # Only cache responses according to map $no_cache
     fastcgi_no_cache $no_cache;
     fastcgi_cache_bypass $no_cache;
