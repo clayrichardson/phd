@@ -22,6 +22,7 @@ RUN apt-get install -qy php-apc
 RUN apt-get install -qy php5-cli
 RUN apt-get install -qy php5-json
 RUN apt-get install -qy php5-fpm
+RUN apt-get install -qy mysql-client
 
 RUN git clone git://github.com/facebook/libphutil.git /var/www/libphutil
 RUN git clone git://github.com/facebook/arcanist.git /var/www/arcanist
@@ -33,6 +34,9 @@ RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /var/nginx/temp
 RUN mkdir -p /var/nginx/cache/phab
 RUN mkdir -p /var/log/nginx
+RUN mkdir -p /var/repo
+
+RUN chown www-data:www-data /var/repo
 
 RUN touch /var/log/nginx/access.log
 RUN touch /var/log/nginx/error.log
