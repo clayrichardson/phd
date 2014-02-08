@@ -6,7 +6,8 @@ task :build do
 end
 
 task :run do
-  sh('docker run -t -p 80:80 -p 443:443 phabricator')
+  sh('docker rm phabricator; exit 0')
+  sh('docker run -name phabricator -t phabricator')
 end
 
 task :attach do
@@ -14,12 +15,13 @@ task :attach do
 end
 
 task :interactive do
-  sh('docker rm phabricator')
+  sh('docker rm phabricator; exit 0')
   sh('docker run -name phabricator -t -i phabricator')
 end
 
 task :shell do
-  sh('docker run -t -p 80:80/tcp -p 443:443/tcp -i phabricator /bin/bash')
+  sh('docker rm phabricator; exit 0')
+  sh('docker run -name phabricator -t -i phabricator /bin/bash')
 end
 
 task :kill do
