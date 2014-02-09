@@ -43,6 +43,7 @@ RUN touch /var/log/nginx/error.log
 
 RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php5/fpm/php-fpm.conf
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
+RUN sed -i 's/pm = dynamic/pm = ondemand/' /etc/php5/fpm/pool.d/www.conf
 RUN echo "apc.stat = 0" >> /etc/php5/fpm/php.ini
 
 RUN rm /etc/nginx/nginx.conf /etc/nginx/sites-enabled/* /etc/nginx/sites-available/*
