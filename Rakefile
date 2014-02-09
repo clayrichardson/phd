@@ -7,7 +7,7 @@ end
 
 task :run do
   sh('docker rm phabricator; exit 0')
-  sh('docker run -name phabricator -t phabricator')
+  sh('docker run -d -name phabricator -t -i phabricator')
 end
 
 task :attach do
