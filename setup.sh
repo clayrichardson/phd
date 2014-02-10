@@ -33,6 +33,8 @@ chmod 0600 /swapfile
 # Some useful tools I like to use
 # You may omit this line if you wish
 apt-get install -y htop git bmon iotop traceroute
+
+\curl -sSL https://get.docker.io
  
 # Add the docker group if it doesn't already exist.
 sudo groupadd docker
