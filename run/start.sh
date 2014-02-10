@@ -2,7 +2,7 @@
 set -xe
 /var/www/phabricator/bin/storage upgrade --force --trace
 /usr/bin/supervisord
-nice -n 20 sudo -u www-data /var/www/phabricator/bin/phd start
+nice -n 20 sudo -u www-data /var/www/phabricator/bin/phd launch RepositoryPullLocal
 # adapted from: http://stackoverflow.com/a/20932423/1050649
 while ( true )
   do
