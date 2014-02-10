@@ -1,4 +1,6 @@
 #!/bin/bash
+
+set -ex
  
 # Swap file commands from:
 # https://www.digitalocean.com/community/articles/how-to-add-swap-on-ubuntu-12-04
