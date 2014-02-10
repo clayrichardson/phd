@@ -37,7 +37,15 @@ apt-get install -y htop git bmon iotop traceroute
 \curl -sSL https://get.docker.io
  
 # Add the docker group if it doesn't already exist.
-sudo groupadd docker
+
+getent group docker
+if [ $? -ne 0 ] ;
+then
+  echo "group docker does not exist, adding..."
+  sudo groupadd docker
+else
+  echo "group docker already exists"
+fi
 # Add the connected user "${USER}" to the docker group.
 # Change the user name to match your preferred user.
 # You may have to logout and log back in again for
