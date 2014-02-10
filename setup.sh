@@ -41,23 +41,5 @@ apt-get install -y htop git bmon iotop traceroute
 
 curl -sSL https://get.docker.io | bash
  
-# Add the docker group if it doesn't already exist.
-
-getent group docker
-if [ -z $(getent group docker) ]
-then
-  echo "group docker does not exist, adding..."
-  sudo groupadd docker
-else
-  echo "group docker already exists"
-fi
-# Add the connected user "${USER}" to the docker group.
-# Change the user name to match your preferred user.
-# You may have to logout and log back in again for
-# this to take effect.
-sudo gpasswd -a ubuntu docker
-# Restart the docker daemon.
-sudo service docker restart
- 
 curl -sSL https://get.rvm.io | bash -s stable --ruby=1.9.3
 
